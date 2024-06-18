@@ -1,5 +1,12 @@
 FigEachChainDirectNet_b <- function(A_list, Collect_list, Troph_list, Omni_list){
-  ### Version qui travaille directement sur des réseaux déjà générés et stables ###
+  #' @title Food web cascades analysis
+  #' @description
+    #' This function analyses all species- and community- cascades on a panel of food webs, and create several figures showing the diversity of cascades.
+  #' @param A_list is a list of which each element is an interaction matrix
+  #' @param Collect_list is a list containing the value of collectivity of each interaction matrix of A_list
+  #' @param Troph_list is a list of which each element is a list containing the trophic level of each species of the interaction matrix corresponding in A_list
+  #' @param Omni_list is a list of which each element is a list containing the omnivory of each species of the interaction matrix corresponding in A_list
+  #' @returns a list containing several figures   
   
   outputs <- data.frame(Collect = numeric(0), Omni = numeric(0), Type = character(0), Value = numeric(0))
   outputs_b <- data.frame(Collect = numeric(0), Omni = numeric(0), InvTot = numeric(0), PercentInv = numeric(0), 
@@ -97,14 +104,14 @@ FigEachChainDirectNet_b <- function(A_list, Collect_list, Troph_list, Omni_list)
   colnames(outputs_b) <- c("Collect", "Omni", "InvTot", "InvPercent", "Type", "RatioTot")
   colnames(percent_inv) <- c("Collect", "Omni", "InvPercent")
   colnames(OutPerFwb) <- c("Collect", "Type", "Percent")
-  # Réorganiser les niveaux de la variable de couleur dans l'ordre souhaité
+  # Rearrange color variable levels in desired order
   outputs$Type <- factor(outputs$Type, levels = c("classic cascade", "amplificated", "inverted", "attenuated"))
   outputs_b$Type <- factor(outputs_b$Type, levels = c("classic cascade", "amplificated", "inverted", "attenuated"))
   
   # Figure Percentage of Types of cascade for each foodweb, aggregated by collect
-  ## Définir les intervalles pour "Collect"
+  ## Set "Collet" interval
   CollectInterval <- seq(0, 2, by = 0.1)
-  ## Agréger les données
+  ## Aggregate data
   OutPerFwbMean <- OutPerFwb %>%
     mutate(CollectInterval = cut(Collect, breaks = CollectInterval)) %>%
     group_by(CollectInterval, Type) %>%
@@ -129,7 +136,7 @@ FigEachChainDirectNet_b <- function(A_list, Collect_list, Troph_list, Omni_list)
           legend.position = "top",
           legend.box.background = element_rect(fill = 'white', color = 'white'),
           legend.key = element_rect(fill = "transparent")) +
-    guides(color = guide_legend(title = NULL), fill = guide_legend(title = NULL))  # Enlever le titre de la légende
+    guides(color = guide_legend(title = NULL), fill = guide_legend(title = NULL)) 
   
   
   # Figure Each Chain
@@ -176,7 +183,7 @@ FigEachChainDirectNet_b <- function(A_list, Collect_list, Troph_list, Omni_list)
           legend.position = "top",
           legend.key = element_rect(fill = "transparent"))
   
-  # scatterplot avec le % de chaînes avec inversion pour chaque réseau de métrique Collectivity
+  # scatterplot with % of chains with inversion for each metric network Collectivity
   PercentInv <- ggplot(percent_inv, aes(x = Collect, y = InvPercent)) +
     geom_point(size = 2, alpha = 0.2) +
     geom_smooth(method = "loess", color = "black", fill = "red") +
@@ -188,7 +195,7 @@ FigEachChainDirectNet_b <- function(A_list, Collect_list, Troph_list, Omni_list)
           panel.grid.major = element_line(color = 'black', linetype = 'dotted'),
           legend.key = element_rect(fill = "transparent"))
   
-  # scatterplot avec le % de chaînes avec inversion pour chaque réseau de métrique Omnivory
+  # scatterplot with % of chains with inversion for each Omnivory metric network
   PercentInvOmni <- ggplot(percent_inv, aes(x = Omni, y = InvPercent)) +
     geom_point(size = 2, alpha = 0.2) +
     geom_smooth(method = "loess", color = "black", fill = "red") +

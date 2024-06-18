@@ -1,10 +1,16 @@
 DivergenceProxy_Figs <- function(A_list, Collect_list, Troph_list, Omni_list){
-  # For a sample of stable food webs:
-  # - Cascade divergence: measures the ratio of cascade-classic to cascade-net for each food chain
-  # - Proxy 1: measures the network integration of each chain (ratio of interactions within the chain to interactions between the chain and the rest of the network)
-  # - Proxy 2: measures the omnivory of each trophic chain (the average omnivory of the chain's constituent species)
-  # - Proxy 3: Measures intraguild predation for each trophic chain
-  # - Outputs three figures relating the cascade divergence metric to each of the three proxies.
+  #' @title Proxies of cascade divergence
+  #' @description
+    #' For a sample of stable food webs:
+    #' - Cascade divergence: measures the ratio of cascade-classic to cascade-net for each food chain
+    #' - Proxy 1: measures the network integration of each chain (ratio of interactions within the chain to interactions between the chain and the rest of the network)
+    #' - Proxy 2: measures the omnivory of each trophic chain (the average omnivory of the chain's constituent species)
+    #' - Proxy 3: Measures intraguild predation for each trophic chain
+  #' @param A_list is a list of which each element is an interaction matrix
+  #' @param Collect_list is a list containing the value of collectivity of each interaction matrix of A_list
+  #' @param Troph_list is a list of which each element is a list containing the trophic level of each species of the interaction matrix corresponding in A_list
+  #' @param Omni_list is a list of which each element is a list containing the omnivory of each species of the interaction matrix corresponding in A_list
+  #' @returns three figures relating the cascade divergence metric to each of the three proxies.
 
   outputs_norm_all <- data.frame(Collect = numeric(0), RatioChain = numeric(0), Ratio = numeric(0),
                                  OmniChain = numeric(0), IGP = numeric(0))

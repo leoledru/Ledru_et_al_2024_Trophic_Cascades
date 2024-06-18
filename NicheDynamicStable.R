@@ -1,4 +1,14 @@
 NicheDynamicStable <- function(S, C, tmax, tstep, SelfReg, Omni = TRUE, TriTroph = FALSE){
+  #' @title Generation of stable system
+  #' @description
+    #' Generates a panel of food webs whose stability is assessed by simulating the dynamics of the network until equilibrium is reached
+  #' @param S is a vector of species number
+  #' @param C is a vector of connectance value
+  #' @param tmax maximum simulation time
+  #' @param tstep time step 
+  #' @param SelfReg self-regulation value for the niche-model algorithm
+  #' @returns an interaction matrix A of the stable system, as well as temporal dynamics 
+  
   Alpha <- 0.9
   # SelfReg = 1
   TP = 3
@@ -30,15 +40,15 @@ NicheDynamicStable <- function(S, C, tmax, tstep, SelfReg, Omni = TRUE, TriTroph
     TrophInit <- niche[["trophic"]]
     # Generalized Lotka-Volterra run 1 #
     ####################################
-    r <- rep(0.1, length(TrophInit)) # Vecteur de taux de croissance pour les espèces basales
-    N0 <- rep(0.1, length(TrophInit)) # Vecteur d'état initial
-    # Paramètres de la simulation
+    r <- rep(0.1, length(TrophInit)) # Growth rate vector for basal species
+    N0 <- rep(0.1, length(TrophInit)) # Initial densities
+    # Simulation parameters
     parameters <- list(A = A, r = r, Troph = TrophInit)
-    # Objet de simulation
+    # Simulation
     ode_system <- ode(y = N0, times = seq(0, tmax, by = tstep), func = LotkaVolterraGeneralized, parms = parameters)
-    # Création d'un dataframe à partir des résultats de la simulation
+    # Store dynamics in dataframe
     result_df <- as.data.frame(ode_system)
-    # Supprimer la première colonne (temps)
+    # Remove first column (time)
     time <- result_df[1]
     result_df <- result_df[-1]
     run1 <- result_df # save densities for plot
@@ -57,10 +67,8 @@ NicheDynamicStable <- function(S, C, tmax, tstep, SelfReg, Omni = TRUE, TriTroph
       # Generalized Lotka-Volterra run 2 #
       ####################################
       r <- rep(0.1, length(Troph))
-      N0 <- final_densities[final_densities>10^-3] # Vecteur d'état initial = final state of first run
-      # Paramètres de la simulation
+      N0 <- final_densities[final_densities>10^-3] # Initial densities = final state of first run
       parameters <- list(A = A, r = r, Troph = Troph)
-      # Objet de simulation
       ode_system <- ode(y = N0, times = seq(0, tmax, by = tstep), func = LotkaVolterraGeneralized, parms = parameters)
       result_df <- as.data.frame(ode_system)
       time <- result_df[1]

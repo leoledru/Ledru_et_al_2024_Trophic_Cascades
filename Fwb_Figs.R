@@ -1,4 +1,4 @@
-# setwd("~/Documents/Post_Doc_CARRTEL/R")
+setwd("~/Documents/Post_Doc_CARRTEL/R")
 setwd("~/Documents/Post_Doc_CARRTEL-main/R")
 #############################
 library(expm)
@@ -17,23 +17,25 @@ library(fdrtool)
 library(viridis)
 library(extrafont)
 library(ggpmisc)
-
+library(docstring)
+library(roxygen2)
 
 ####################################
 # Figure 1 : Simple food chain model
 ####################################
 source("ChainAttenuation.R")
+docstring(ChainAttenuation)
 ChainAttenuation()
 
-################################################
-# Figures : 2 / 3 / A.4 / A.5 / A.6 / A.9 / A.10
-################################################
+################################
+# Figures : 2 / A.4 / A.6 / A.7
+###############################
 source("FigEachChainDirectNet_b.R")
-# source("FigEachChainDirectNet_c.R")
+docstring(FigEachChainDirectNet_b)
 # Loading previously generated stable networks
-load("StableFwbs_TL3_b.Rdata") # trophic level max = 3
-load("StableFwbs_TL4_b.Rdata") # trophic level max = 4
-load("StableFwbs_TL3_Structured_b.Rdata") # perfectly structured food webs
+load("StableFwbs_TL3_b.Rdata") # trophic level max = 3 (Figure 2 & A.4)
+load("StableFwbs_TL4_b.Rdata") # trophic level max = 4 (Figure A.6)
+load("StableFwbs_TL3_Structured_b.Rdata") # perfectly structured food webs (Figure A.7)
 
 StableFwbs <- StableFwbs_TL4 # set the correct variable according to the file loaded
 # filter too exclude too high collectivity foodwebs
@@ -51,9 +53,10 @@ for (i in 1:length(StableFwbs)){
 }
 
 # For networks with maximum trophic level = 3 or 4 and trophic cascade from top to top-2
-source("FigEachChainDirectNet_b.R")
 Gplots <- FigEachChainDirectNet_b(A_list, Collect_list, Troph_list, Omni_list)
+
 #  For networks with maximum trophic level = 4 and trophic cascade from top to bottom
+# source("FigEachChainDirectNet_c.R")
 # Gplots <- FigEachChainDirectNet_c(A_list, Collect_list, Troph_list, Omni_list)
 
 # Loading saved analysis to see figures without running analysis # 
@@ -77,20 +80,35 @@ Gplots[[10]] # Scatter plot of community-cascade diversity (all food webs) accor
 Gplots[[11]] # Barplot of community-cascade diversity
 Gplots[[12]] # Types ~ Collect with variance
 par(family = "LM Roman 10")
-plot(Collect_list, Omni_list, xlab = "Collectivity", ylab = "Omnivory") # Fig A.6
+plot(Collect_list, Omni_list, xlab = "Collectivity", ylab = "Omnivory")
 
 
-##############################################
-# Figures : A.7 Proxies of cascade divergence
-##############################################
+###########################################
+# Figures : 3 Proxies of cascade divergence
+###########################################
 source("DivergenceProxy_Figs.R")
+docstring(DivergenceProxy_Figs)
 Out <- DivergenceProxy_Figs(A_list, Collect_list, Troph_list, Omni_list)
 Out[[1]] # Divergence according to food chain integration
 Out[[2]] # Divergence according to food chain omnivory
 Out[[3]] # Divergence according to food chain intraguild predation
 
 
+################################################
+# Figures A.1 & A.2 : Cascade inversion dynamics
+################################################
+source("InversionAndPerturb.R")
+docstring(InversionAndPerturb)
+InversionAndPerturb(tmax, tstep, S, C, Omni = FALSE)
+  
 
-
-
+################################################
+# Figures A.5 : Compensation between net effects
+################################################
+source("FigEachPredToConsoNet.R")
+docstring(FigEachPredToConsoNet)
+FigEachPredToConsoNet(A_list, Collect_list, Troph_list)
+  
+  
+  
 

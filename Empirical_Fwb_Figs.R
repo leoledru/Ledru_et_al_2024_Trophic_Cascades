@@ -1,14 +1,13 @@
 setwd("~/Documents/Post_Doc_CARRTEL/R")
 
-library(NetIndices) # pour calcul niveau troph
+library(NetIndices) # trophic levels and omnivory
 library(latex2exp)
-library(plotrix) # pour plot cercle
+library(plotrix)
 library(expm)
 library(sparsevar)
 library(RColorBrewer)
 library(igraph)
-library(plotly) # pour plot 3d
-library(matlib) # pour calcul inverse de matrice
+library(matlib)
 library(rlang)
 library(ggplot2)
 library(ggallin)
@@ -22,13 +21,15 @@ library(tidyverse)
 library(rjson)
 library(dplyr)
 library(gridExtra)
+library(docstring)
+library(roxygen2)
 source("FoodWebFormat.R")
 source("FigEmpiricalWebs_b.R")
 
 
-##################################################
-# Figure 4 : analysis of lakes empirical food webs 
-##################################################
+########################################################
+# Figure 4 & A.9 : analysis of lakes empirical food webs 
+########################################################
 
 ############################################################################
 # Compute for each lake the "average web" (from the 150 "jacobians for each)
@@ -93,6 +94,8 @@ load("LakesDirectSalmo.RData")
 ############################
 # Analysis of the lakes webs
 
+source("FigEmpiricalWebs_b.R")
+docstring(FigEmpiricalWebs_b)
 #debug(FigEmpiricalWebs_b)
 MaxInter <- 2
 MinInter <- 0.01
@@ -106,8 +109,9 @@ EmpiricalPlot[[5]]
 
 
 #####################################################
-# Figure A.12 : analysis of Bascompte lab's food webs
+# Figure A.10 : analysis of Bascompte lab's food webs
 #####################################################
+source("FoodWebFormat.R")
 # debug(FoodWebFormat)
 base_url <- "https://www.web-of-life.es/"
 json_url <- paste0(base_url,"get_networks.php?interaction_type=FoodWebs&data_type=weighted")

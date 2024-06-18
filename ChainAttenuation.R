@@ -1,7 +1,9 @@
 ChainAttenuation <- function(Omni = FALSE){
-  # Measurement of the classic trophic cascade and the net trophic cascade on a simple trophic chain
-  # as a function of the consumer's attack rate on the resource.
-  # Omni = FALSE or TRUE for a link between pred and resource.
+  #' @title Figure 1
+  #' @description
+    #' Measurement of the classic trophic cascade and the net trophic cascade on a simple trophic chain as a function of the consumer's attack rate on the resource.
+  #' @param Omni FALSE or TRUE for a link between pred and resource.
+  #' @returns nothing, directly create and show the plot
   
   par(family = "LM Roman 10") # latex font
   n = 3

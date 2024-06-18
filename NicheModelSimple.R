@@ -1,4 +1,13 @@
 NicheModelSimple <- function(S, C, ConvCoeff, SelfReg, MaxTL = 4){
+  #' @title Niche-model algorithm
+  #' @description
+    #' Generation of food web from the niche-model algorithm inspired by Williams, R. J., & Martinez, N. D. (2000). Simple rules yield complex food webs. Nature, 404(6774), 180-183.
+  #' @param S is a vector of species number
+  #' @param C is a vector of connectance value
+  #' @param ConvCoeff coefficient of conversion value
+  #' @param SelfReg self-regulation value
+  #' @param MaxTL maximum trophic level allowed
+  #' @returns a list with the direct interaction matrix, net interaction matrix, collectivity, connectance, trophic levels of each species
   
   while (TRUE){
     n.i <- sort(runif(S), decreasing = F)
@@ -62,12 +71,11 @@ NicheModelSimple <- function(S, C, ConvCoeff, SelfReg, MaxTL = 4){
   Connectance <- sum(Interaction != 0) / nrow(Interaction)^2
   ### Normalisation by self-reg and computation of Net Effects matrix
   diag(Interaction) = rep.int(-SelfReg, nrow(Interaction))
-  D <- diag(Interaction) # self-reg matrice
-  # Normalisation par la self_reg D pour obtenir dg/dN = D.(-I + A)
-  I <- diag(1, nrow = nrow(Interaction)) # matrice identité
-  A_norm <- Interaction / -D # A_norm -> (-I + A_ij) avec A_ij = aij/(-aii) (normalisée par self-reg)
-  A_ij <- A_norm + I  # A_ij -> non-dimensional direct interactions (avec Aii = 0)
-  if (det(I - A_ij ) != 0) { # (-I + A_ij) inversible ssi determinant =! 0 
+  D <- diag(Interaction)
+  I <- diag(1, nrow = nrow(Interaction))
+  A_norm <- Interaction / -D # A_norm -> (-I + A_ij) with A_ij = aij/(-aii)
+  A_ij <- A_norm + I  # A_ij -> non-dimensional direct interactions
+  if (det(I - A_ij ) != 0) {
     InteractionNet <- solve(I - A_ij ) # A_ij_inv -> non-dimensional INdirect interactions -(-I + A_ij)^-1 := (I - A)^-1
   } else {
     print("Matrice A_ij non inversible")

@@ -1,4 +1,12 @@
 InversionAndPerturb <- function(tmax, tstep, S, C, Omni = FALSE){
+  #' @title Dynamic of cascade inversion (Figures A.1 / A.2)
+  #' @description
+    #' Generate a stable food web, identify trophic chains with cascade inversion, and if any apply a perturbation on predator to visualize the dynamics response of the system
+  #' @param tmax maximum duration of the simulation
+  #' @param tstep time step
+  #' @param S number of species
+  #' @param C connectance
+  #' @returns plot of the dynamics response, or the message ""No chain with inversion"
   
   # Generate a stable system with max trophic level = 3 #
   out <- NicheDynamicStable(S = S, C = C, tmax = tmax, tstep = tstep, SelfReg = 1, 
@@ -23,8 +31,8 @@ InversionAndPerturb <- function(tmax, tstep, S, C, Omni = FALSE){
   if (length(Idx) > 0){ # if there at least on chain with inversion
     EqN <- out[["run2"]]
     EqN <- EqN[nrow(EqN),]
-    EqTroph <- out[["Troph"]] # Trophy des species non-null
-    EqN <- EqN[EqN >= 10^-3] # Densités à l'eq pour état initial
+    EqTroph <- out[["Troph"]] # Trophy of non-null species
+    EqN <- EqN[EqN >= 10^-3]
     r <- rep(0.1, length(EqTroph))
     IdxBottom <- unlist(outInv["IdxBottom"]) # index of species at the bottom of chain
     plot_all_species <- vector("list", length(Idx))
@@ -35,9 +43,9 @@ InversionAndPerturb <- function(tmax, tstep, S, C, Omni = FALSE){
     IdxBottoms <- list()
     for (i in 1:length(Idx)){ # for each top species of chain with inversion
       # Perturbation
-      idx_perturb <- Inversion[[Idx[[i]]]][["top"]] # top node à perturber
-      idx_bottom <- Inversion[[Idx[[i]]]][["bottom"]] # bottom nodes qui répondent
-      # calcul le r_perturb maximal possible sans extinction et divise par deux
+      idx_perturb <- Inversion[[Idx[[i]]]][["top"]] # top node to perturb
+      idx_bottom <- Inversion[[Idx[[i]]]][["bottom"]] # bottom nodes 
+      # calculates the maximum r_perturb possible without extinction and divides by two
       k <- which(AInv[,idx_perturb] < 0)
       r_perturb <- min(EqN[k]/-AInv[k,idx_perturb]) / 2 
       # find middle node
@@ -79,7 +87,7 @@ InversionAndPerturb <- function(tmax, tstep, S, C, Omni = FALSE){
       NetCascade <- outInv[["CascadeNet"]][[Idx[[i]]]][which(IdxBottom %in% idx_bottom)]
       DirectCascade <- outInv[["CascadeDirect"]][[Idx[[i]]]][which(IdxBottom %in% idx_bottom)]
       print(paste0("Direct = ", DirectCascade, " Net = ", NetCascade))
-      # Réorganiser les données
+      #
       for (j in 1:dim(out_perturb)[[2]]) {
         species_num <- j
         if (j %in% idx_perturb){
@@ -98,7 +106,7 @@ InversionAndPerturb <- function(tmax, tstep, S, C, Omni = FALSE){
       }
       FullRuns[[i]] <- new_df
       IdxBottoms[[i]] <- idx_bottom
-      # Créer le graphique avec toutes les espèces
+      #
       # plot_all_species[[i]] <- ggplot(new_df, aes(x = Time, y = Density, color = Type, group = Species)) +
       #   geom_line() +
       #   labs(title = paste0("Response to perturbation, S = ", S, " C = ", C, " Collectivity = ", Collect),
@@ -120,7 +128,7 @@ InversionAndPerturb <- function(tmax, tstep, S, C, Omni = FALSE){
         geom_vline(xintercept = 200) +
         theme_minimal()
       
-      # Variation de densités en mode pyramide de biomasse
+      # Density variation in biomass pyramid mode
       data <- data.frame(
         direct = (EqDirectChain - EqNChain) / EqNChain * 100,
         net = (EqNetChain - EqNChain) / EqNChain * 100,
@@ -179,7 +187,7 @@ InversionAndPerturb <- function(tmax, tstep, S, C, Omni = FALSE){
               plot.title = element_text(size = 14, face = "bold", family = "LM Roman 10"),
               panel.background = element_rect(fill = 'white', color = 'black'))
       
-      # Créer le graphique avec seulement les espèces de Type "Bottom"
+      # 
       # for (j in 1:length(idx_bottom)){
       #   Direct <- A[idx_bottom[[j]], idx_perturb]
       #   Order2 <- A

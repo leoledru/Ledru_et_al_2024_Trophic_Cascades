@@ -1,9 +1,16 @@
 FigEmpiricalWebs_b <- function(AllFwbs, MaxInter, MinInter, NbrStep){
-  # Measurement for every empirical network and for a whole range of self-regulation 
-  # from MinInter to MaxInter by NbrStep steps :
-  # - The collectivity
-  # - The community-cascade inversion/attenuation/amplification/classic percentage
-  # - Percentage of species-cascade inversion/attenuation/amplification/classic
+  #' @title Analysis of empirical food webs
+  #' @description
+    #' Measurement for every empirical network and for a whole range of self-regulation from MinInter to MaxInter by NbrStep steps :
+    #' - The collectivity
+    #' - The community-cascade inversion/attenuation/amplification/classic percentage
+    #' - Percentage of species-cascade inversion/attenuation/amplification/classic
+  #' @param AllFwbs is a list of which each element is an empirical interaction matrix
+  #' @param MaxInter is the maximum value of self-regulation used
+  #' @param MinInter is the minimum value of self-regulation used
+  #' @param NbrStep is the number of self-regulation values used between MinInter and MaxInter to create a panel of self-regulation
+  #' @returns a list of figures
+
   
   outputsInv <- data.frame(Fwb = numeric(0), Variable = numeric(0), Value = numeric(0), Omni = numeric(0))
   outputsAtt <- data.frame(Fwb = numeric(0), Variable = numeric(0), Value = numeric(0), Omni = numeric(0))
