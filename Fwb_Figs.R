@@ -37,7 +37,7 @@ load("StableFwbs_TL3_b.Rdata") # trophic level max = 3 (Figure 2 & A.4)
 load("StableFwbs_TL4_b.Rdata") # trophic level max = 4 (Figure A.6)
 load("StableFwbs_TL3_Structured_b.Rdata") # perfectly structured food webs (Figure A.7)
 
-StableFwbs <- StableFwbs_TL4 # set the correct variable according to the file loaded
+StableFwbs <- StableFwbs_TL3 # set the correct variable according to the file loaded
 # filter too exclude too high collectivity foodwebs
 FilterList <- function(sublist){all(sublist$Collect < 2)}
 StableFwbs <- Filter(FilterList, StableFwbs)
@@ -108,7 +108,62 @@ InversionAndPerturb(tmax, tstep, S, C, Omni = FALSE)
 source("FigEachPredToConsoNet.R")
 docstring(FigEachPredToConsoNet)
 FigEachPredToConsoNet(A_list, Collect_list, Troph_list)
-  
-  
-  
 
+
+###########################################
+# Properties of simulated food webs
+# And results for low-connectance food webs
+###########################################
+StableFwbs <- StableFwbs_TL3 # set the correct variable according to the file loaded
+# filter too exclude too high collectivity foodwebs
+FilterList <- function(sublist){all(sublist$Collect < 2)}
+StableFwbs <- Filter(FilterList, StableFwbs)
+A_list <- list()
+Collect_list <- list()
+Troph_list <- list()
+Omni_list <- list()
+for (i in 1:length(StableFwbs)){
+  A_list[[i]] <- StableFwbs[[i]][["A"]]
+  Collect_list[[i]] <- StableFwbs[[i]][["Collect"]]
+  Troph_list[[i]] <- StableFwbs[[i]][["Troph"]]
+  Omni_list[[i]] <- StableFwbs[[i]][["Omni"]]
+}
+
+Connectance <- c()
+for (i in 1:length(A_list)){
+  FoodWeb <- A_list[[i]]
+  # connectance of undirected network : L / S^2
+  L <- sum(FoodWeb != 0)
+  L <- L/2 # divided by two because in our food webs each positive links as a symetrical negative link
+  S <- nrow(FoodWeb)
+  Connectance <- c(Connectance, L / S^2)                  
+}
+df <- data.frame(x = rep(1, length(Connectance)), Connectance = Connectance)
+p <- ggplot(df, aes(x=x, y=Connectance)) + 
+  geom_violin()
+# violin plot with dot plot
+p + geom_jitter(shape=1, position=position_jitter(0.2))
+
+# results for a sub-sample with low connectance
+IdxLowConnectance <- which(Connectance < 0.05)
+LowConnectanceFwbs <- A_list[IdxLowConnectance]
+LowConnectanceTroph <- Troph_list[IdxLowConnectance]
+LowConnectanceCollect <- Collect_list[IdxLowConnectance]
+LowConnectanceOmni <- Omni_list[IdxLowConnectance]
+
+Gplots <- FigEachChainDirectNet_b(LowConnectanceFwbs, LowConnectanceCollect, 
+                                  LowConnectanceTroph, LowConnectanceOmni)
+Gplots[[1]] # Scatter plot of species-cascade diversity (all food chains)
+Gplots[[2]] # Barplot of species-cascade diversity
+Gplots[[3]] # Percentage of community-cascade inversion
+Gplots[[4]] # Percentage of community-cascade inversion Barplot
+Gplots[[5]] # Percentage of community-cascade inversion according to omnivory
+Gplots[[6]] # Percentage of community-cascade inversion according to omnivory Barplot
+Gplots[[7]] # Percentage of species-cascade inversion
+Gplots[[8]] # Percentage of species-cascade inversion according to omnivory
+Gplots[[9]] # Scatter plot of community-cascade diversity (all food webs)
+Gplots[[10]] # Scatter plot of community-cascade diversity (all food webs) according to omnivory
+Gplots[[11]] # Barplot of community-cascade diversity
+Gplots[[12]] # Types ~ Collect with variance
+par(family = "LM Roman 10")
+plot(Collect_list, Omni_list, xlab = "Collectivity", ylab = "Omnivory")
