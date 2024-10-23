@@ -1,6 +1,6 @@
 FigEachChainDirectNet_c <- function(A_list, Collect_list, Troph_list, Omni_list){
-  ### Version qui travaille directement sur des réseaux déjà générés et stables ###
-  # VERSION POUR RÉSEAUX AVEC MaxTL = 4, ET CASCADE D'ORDRE 3 DU SOMMET À LA BASE 
+  
+  # VERSION FOR NETWORKS WITH MaxTrophicLevel = 4, AND ORDER 3 CASCADE FROM TOP-SPECIES TO BASAL-SPECIES
   
   outputs <- data.frame(Collect = numeric(0), Omni = numeric(0), Type = character(0), Value = numeric(0))
   outputs_b <- data.frame(Collect = numeric(0), Omni = numeric(0), InvTot = numeric(0), PercentInv = numeric(0))
